@@ -1,11 +1,11 @@
 const { Router } = require("express");
 const {
-  createTimeBlock,
+  createSchedule,
   listReservations,
 } = require("../controllers/adminController");
 const router = Router();
 const authenticateToken = require("../middleware/auth");
-router.post("/time-blocks", authenticateToken, createTimeBlock);
+router.post("/schedule", authenticateToken, createSchedule);
 router.get("/reservations", authenticateToken, listReservations);
 
 module.exports = router;

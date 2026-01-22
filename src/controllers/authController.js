@@ -5,7 +5,12 @@ const register = async (req, res) => {
     await registerUser(email, password, name);
     return res.status(201).json({ message: "User register Succesfully" });
   } catch (error) {
-    return res.status(400).json({ error: error.message });
+    if (error.message === "EMAIL_ALREADY_EXISTS") {
+      return res.status(409).json({
+        error: "Email already registered",
+      });
+    }
+    return res.status(500).json({ error: error.message });
   }
 };
 

@@ -1,18 +1,23 @@
 const {
-  createTimeBlockService,
+  createScheduleService,
   listReservationsService,
 } = require("../services/adminService");
-const createTimeBlock = async (req, res) => {
+
+const createSchedule = async (req, res) => {
   if (req.user.role !== "ADMIN") {
     return res.status(403).json({ error: "Access denied" });
   }
-  console.log("BODY:", req.body);
-  const { startTime, endTime } = req.body;
+
+  const { date, timeBlockId, isAvailable } = req.body;
   try {
-    const newTimeBlock = await createTimeBlockService(startTime, endTime);
-    res.status(201).json(newTimeBlock);
+    const newSchedule = await createScheduleService(
+      date,
+      timeBlockId,
+      isAvailable,
+    );
+    res.status(201).json(newSchedule);
   } catch (error) {
-    res.status(500).json({ error: "Error creating time block" });
+    res.status(500).json({ error: "Error creating schedule" });
   }
 };
 
@@ -27,4 +32,4 @@ const listReservations = async (req, res) => {
     res.status(500).json({ error: "Error fetching reservations" });
   }
 };
-module.exports = { createTimeBlock, listReservations };
+module.exports = { createSchedule, listReservations };

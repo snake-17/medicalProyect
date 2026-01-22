@@ -20,15 +20,25 @@ model User {
   }
   model Appointment{
     id    Int @id @default(autoincrement())
-    date  DateTime
-    user  User  @relation(fields: [userId], references: [id])
     userId Int
-    timeBlock TimeBlock @relation(fields: [timeBlockId], references: [id])
-    timeBlockId Int
+    scheduleId Int @unique
+
+    user  User  @relation(fields: [userId], references: [id])
+    schedule Schedule @relation(fields: [scheduleId], references: [id])
   }
+ model Schedule {
+  id          Int       @id @default(autoincrement())
+  date        DateTime
+  available   Boolean   @default(true)
+
+  timeBlockId Int
+  timeBlock   TimeBlock @relation(fields: [timeBlockId], references: [id])
+
+  appointment Appointment?
+}
   model TimeBlock {
     id  Int   @id @default(autoincrement())
-    startTime DateTime
-    endTime DateTime
-    appointments Appointment []
+    startTime String
+    endTime String
+    schedules Schedule[]
   }

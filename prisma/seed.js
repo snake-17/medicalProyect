@@ -4,55 +4,17 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
-  // Crear usuarios
-  const user1 = await prisma.user.create({
-    data: {
-      email: "user13@example.com",
-      password: "password123",
-      name: "User One",
-      role: "USER",
-    },
-  });
-
-  const user2 = await prisma.user.create({
-    data: {
-      email: "admin13@example.com",
-      password: "admin123",
-      name: "Admin User",
-      role: "ADMIN",
-    },
-  });
-
   // Crear bloques de tiempo
-  const timeBlock1 = await prisma.timeBlock.create({
-    data: {
-      startTime: new Date("2023-10-02T09:00:00Z"),
-      endTime: new Date("2023-10-02T10:00:00Z"),
-    },
-  });
-
-  const timeBlock2 = await prisma.timeBlock.create({
-    data: {
-      startTime: new Date("2023-10-01T10:00:00Z"),
-      endTime: new Date("2023-10-01T11:00:00Z"),
-    },
-  });
-
-  // Crear citas
-  await prisma.appointment.create({
-    data: {
-      date: new Date("2023-10-01T09:00:00Z"),
-      user: { connect: { id: user1.id } },
-      timeBlock: { connect: { id: timeBlock1.id } },
-    },
-  });
-
-  await prisma.appointment.create({
-    data: {
-      date: new Date("2023-10-01T10:00:00Z"),
-      user: { connect: { id: user2.id } },
-      timeBlock: { connect: { id: timeBlock2.id } },
-    },
+  const catalogo = [
+    { startTime: "08:00", endTime: "08:30" },
+    { startTime: "08:30", endTime: "09:00" },
+    { startTime: "09:00", endTime: "09:30" },
+    { startTime: "09:30", endTime: "10:00" },
+    { startTime: "10:00", endTime: "10:30" },
+    { startTime: "10:30", endTime: "11:00" },
+  ];
+  const timeBlocks = await prisma.timeBlock.createMany({
+    data: catalogo,
   });
 }
 
