@@ -8,15 +8,14 @@ const createSchedule = async (req, res) => {
     return res.status(403).json({ error: "Access denied" });
   }
 
-  const { date, timeBlockId, isAvailable } = req.body;
+  const { date, timeBlockId } = req.body;
   try {
-    const newSchedule = await createScheduleService(
-      date,
-      timeBlockId,
-      isAvailable,
-    );
+    const newSchedule = await createScheduleService(date, timeBlockId);
     res.status(201).json(newSchedule);
   } catch (error) {
+    if (error.message === "SCHEDULE_NOT_AVAILABLE") {
+      return res.status(409).json({ error: "Schedule not available" });
+    }
     res.status(500).json({ error: "Error creating schedule" });
   }
 };

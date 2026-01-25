@@ -2,14 +2,24 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const createScheduleService = async (date, timeBlockId) => {
-  const newSchedule = await prisma.schedule.create({
-    data: {
-      date: new Date(date),
-      timeBlockId: timeBlockId,
-      available: true,
-    },
+  return prisma.$transaction(async (tx) => {
+    const newSchedule = await tx.schedule.findFirst({
+      where: {
+        date: new Date(date),
+        timeBlockId,
+      },
+    });
+    if (newSchedule) {
+      throw new Error("SCHEDULE_NOT_AVAILABLE");
+    }
+    return tx.schedule.create({
+      data: {
+        date: new Date(date),
+        timeBlockId: timeBlockId,
+        available: true,
+      },
+    });
   });
-  return newSchedule;
 };
 
 const listReservationsService = async () => {
