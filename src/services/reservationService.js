@@ -112,3 +112,25 @@ exports.deleteReservation = (userId, appointmentId) => {
     });
   });
 };
+exports.getSchedule = async () => {
+  schedules = await prisma.schedule.findMany({
+    where: { available: true },
+    select: {
+      id: true,
+      date: true,
+      timeBlock: {
+        select: {
+          startTime: true,
+          endTime: true,
+        },
+      },
+    },
+    orderBy: [{ date: "asc" }],
+  });
+  return schedules.map((item) => ({
+    id: item.id,
+    date: item.date,
+    startTime: item.startTime,
+    endTime: item.startTime,
+  }));
+};

@@ -2,7 +2,6 @@ const { Router } = require("express");
 const authRouter = require("./auth");
 const adminRouter = require("./admin");
 const reservations = require("./reservations");
-const appoinments = require("./appoinments");
 const router = Router();
 
 router.use("/auth", authRouter);

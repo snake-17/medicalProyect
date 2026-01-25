@@ -72,3 +72,14 @@ exports.deleteReservation = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+exports.getSchedule = async () => {
+  try {
+    const schedule = await reservationService.getSchedule();
+    if (!schedule) {
+      return res.status(400).json({ error: "Not found schedules" });
+    }
+    res.json(schedule);
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching schedules" });
+  }
+};

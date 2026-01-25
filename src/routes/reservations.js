@@ -15,5 +15,6 @@ router.delete(
   authenticateToken,
   reservationController.deleteReservation,
 );
+router.get("/schedule", authenticateToken, reservationController.getSchedule);
 
 module.exports = router;
