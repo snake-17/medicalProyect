@@ -4,12 +4,16 @@ const authenticateToken = require("../middleware/auth");
 const router = Router();
 
 router.post("/", authenticateToken, reservationController.createReservation);
-router.get("/:id", authenticateToken, reservationController.getReservation);
-router.put("/:id", authenticateToken, reservationController.updateReservation);
+router.get("/", authenticateToken, reservationController.getReservation);
+router.put(
+  "/:appointmentId",
+  authenticateToken,
+  reservationController.updateReservation,
+);
 router.delete(
   "/:id",
   authenticateToken,
-  reservationController.deleteReservation
+  reservationController.deleteReservation,
 );
 
 module.exports = router;
