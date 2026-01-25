@@ -10,7 +10,7 @@ exports.createReservation = async (req, res) => {
     res.status(201).json(reservation);
   } catch (error) {
     if (error.message === "SCHEDULE_NOT_AVAILABLE") {
-      return res.status(409).json({ error: "Horario no disponible" });
+      return res.status(409).json({ error: "Schedule not available" });
     }
     res.status(400).json({ error: error.message });
   }

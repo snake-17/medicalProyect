@@ -25,11 +25,32 @@ exports.createReservation = async ({ userId, scheduleId }) => {
   });
 };
 exports.getReservation = async (userId) => {
-  return prisma.schedule.findMany({
+  const appointments = await prisma.appointment.findMany({
     where: { userId },
-    include: { timeblock: true },
+    select: {
+      id: true,
+      schedule: {
+        select: {
+          date: true,
+          timeBlock: {
+            select: {
+              startTime: true,
+              endTime: true,
+            },
+          },
+        },
+      },
+    },
   });
+
+  return appointments.map((a) => ({
+    id: a.id,
+    date: a.schedule.date,
+    startTime: a.schedule.timeBlock.startTime,
+    endTime: a.schedule.timeBlock.endTime,
+  }));
 };
+
 exports.updateReservation = async (appointmentId, scheduleId, userId) => {
   return prisma.$transaction(async (tx) => {
     const appointment = await tx.appointment.findUnique({
@@ -69,35 +90,8 @@ exports.updateReservation = async (appointmentId, scheduleId, userId) => {
     });
   });
 };
-// exports.deleteReservation = (userId, appointmentId) => {
-//   return prisma.$transaction(async (tx) => {
-//     availability = await tx.appointment.findUnique({
-//       where: { id: appointmentId },
-//     });
-//     if (!appointment) throw new Error("APPOINMENT_NOT_FOUND");
-//     if (appointment.userId !== userId) throw new Error("FORBIDDEN");
-
-//     const schedule = await tx.schedule.findUnique({
-//       where: { id: scheduleId },
-//     });
-//     if (!schedule) throw new Error("SCHEDULE_NOT_FOUND");
-//     if (!schedule.available) throw new Error("SCHEDULE_NOT_AVAILABLE");
-
-//     await tx.schedule.update({
-//       where: { id: appointment.scheduleId },
-//       data: { available: true },
-//     });
-
-//     return await tx.appointment.delete({
-//       where: { id: parseInt(userId, 10) },
-//     });
-//   });
-// };
 exports.deleteReservation = (userId, appointmentId) => {
   return prisma.$transaction(async (tx) => {
-    console.log("userId:", userId);
-    console.log("appointmentId:", appointmentId);
-
     appointments = await tx.appointment.findUnique({
       where: { id: appointmentId },
     });

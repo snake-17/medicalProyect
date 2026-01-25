@@ -8,5 +8,4 @@ const router = Router();
 router.use("/auth", authRouter);
 router.use("/admin", adminRouter);
 router.use("/reservations", reservations);
-router.use("/users", appoinments);
 module.exports = router;
