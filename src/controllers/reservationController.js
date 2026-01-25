@@ -72,9 +72,10 @@ exports.deleteReservation = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
-exports.getSchedule = async () => {
+exports.getSchedule = async (req, res) => {
   try {
-    const schedule = await reservationService.getSchedule();
+    const { date } = req.query;
+    const schedule = await reservationService.getSchedule(date);
     if (!schedule) {
       return res.status(400).json({ error: "Not found schedules" });
     }

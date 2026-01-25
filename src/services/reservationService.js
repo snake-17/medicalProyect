@@ -112,9 +112,14 @@ exports.deleteReservation = (userId, appointmentId) => {
     });
   });
 };
-exports.getSchedule = async () => {
+exports.getSchedule = async (date) => {
   schedules = await prisma.schedule.findMany({
-    where: { available: true },
+    where: {
+      available: true,
+      ...(date && {
+        date: new Date(date),
+      }),
+    },
     select: {
       id: true,
       date: true,
@@ -125,12 +130,11 @@ exports.getSchedule = async () => {
         },
       },
     },
-    orderBy: [{ date: "asc" }],
   });
   return schedules.map((item) => ({
     id: item.id,
     date: item.date,
-    startTime: item.startTime,
-    endTime: item.startTime,
+    startTime: item.timeBlock.startTime,
+    endTime: item.timeBlock.endTime,
   }));
 };
