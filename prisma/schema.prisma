@@ -6,39 +6,41 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-enum Role{
+
+model User {
+  id           Int           @id @default(autoincrement())
+  name         String
+  email        String        @unique
+  password     String
+  role         Role
+  appointments Appointment[]
+}
+
+model Appointment {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  scheduleId Int      @unique
+  schedule   Schedule @relation(fields: [scheduleId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model Schedule {
+  id          Int          @id @default(autoincrement())
+  date        DateTime
+  available   Boolean      @default(true)
+  timeBlockId Int
+  appointment Appointment?
+  timeBlock   TimeBlock    @relation(fields: [timeBlockId], references: [id])
+}
+
+model TimeBlock {
+  id        Int        @id @default(autoincrement())
+  startTime String
+  endTime   String
+  schedules Schedule[]
+}
+
+enum Role {
   ADMIN
   USER
 }
-model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
-  password String
-  role Role
-  appointments Appointment[]
-  }
-  model Appointment{
-    id    Int @id @default(autoincrement())
-    userId Int
-    scheduleId Int @unique
-
-    user  User  @relation(fields: [userId], references: [id])
-    schedule Schedule @relation(fields: [scheduleId], references: [id])
-  }
- model Schedule {
-  id          Int       @id @default(autoincrement())
-  date        DateTime
-  available   Boolean   @default(true)
-
-  timeBlockId Int
-  timeBlock   TimeBlock @relation(fields: [timeBlockId], references: [id])
-
-  appointment Appointment?
-}
-  model TimeBlock {
-    id  Int   @id @default(autoincrement())
-    startTime String
-    endTime String
-    schedules Schedule[]
-  }
